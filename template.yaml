@@ -1,0 +1,56 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  microlam-java19-demo
+
+  Sample SAM Template for microlam-java19-demo
+
+# More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
+Globals:
+  Function:
+    Timeout: 20
+    SnapStart:
+       ApplyOn: PublishedVersions
+  Api:
+    EndpointConfiguration: REGIONAL
+
+Resources:
+  MicrolamJava19Demo:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      FunctionName: MicrolamJava19Demo
+      CodeUri: ./target/microlam-java19-demo-1.0-SNAPSHOT-aws-lambda.zip
+      Handler: tech.solusoft.lambda.MicrolamJava19Demo
+      Runtime: java11
+      Architectures:
+        - x86_64
+      MemorySize: 512
+      Environment: # More info about Env Vars: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#environment-object
+        Variables:
+          PARAM1: VALUE
+      Events:
+        MicrolamJava19DemoApi1:
+          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Properties:
+            Path: /mult
+            Method: post
+        MicrolamJava19DemoApi2:
+          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Properties:
+            Path: /sum
+            Method: post
+            
+
+Outputs:
+  # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
+  # Find out more about other implicit resources you can reference within SAM
+  # https://github.com/awslabs/serverless-application-model/blob/master/docs/internals/generated_resources.rst#api
+  MicrolamJava19DemoApi:
+    Description: "API Gateway endpoint URL for Prod stage for MicrolamJava19Demo function"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/"
+  MicrolamJava19Demo:
+    Description: "MicrolamJava19Demo Function ARN"
+    Value: !GetAtt MicrolamJava19Demo.Arn
+  MicrolamJava19DemoIamRole:
+    Description: "Implicit IAM Role created for MicrolamJava19Demo function"
+    Value: !GetAtt MicrolamJava19DemoRole.Arn
